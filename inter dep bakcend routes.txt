@@ -1,0 +1,171 @@
+inter dep bakcend routes 
+# Summary of Tested Routes
+
+## Authentication Routes (`/api/auth`)
+
+### POST /api/auth/register
+**Body:**
+```json
+{
+  "nom": "John Doe",
+  "email": "john.doe@email.com",
+  "password": "mySecurePassword123",
+  "departement": "IT"
+}
+```
+
+### POST /api/auth/login
+**Body:**
+```json
+{
+  "email": "john.doe@email.com",
+  "password": "mySecurePassword123"
+}
+```
+
+## User Routes (`/api/users`)
+
+### GET /api/users
+**Headers:**
+- Authorization: Bearer <token>
+
+### GET /api/users/:id
+**Headers:**
+- Authorization: Bearer <token>
+
+### PUT /api/users/:id
+**Headers:**
+- Authorization: Bearer <token>
+- Content-Type: application/json
+
+**Body:**
+```json
+{
+  "role": "admin"
+}
+```
+
+### DELETE /api/users/:id
+**Headers:**
+- Authorization: Bearer <token>
+
+## Publication Routes (`/api/publications`)
+
+### POST /api/publications
+**Headers:**
+- Authorization: Bearer <token>
+- Content-Type: application/json
+
+**Body:**
+```json
+{
+  "titre": "Nouvelle politique RH",
+  "description": "Annonce de la nouvelle politique des ressources humaines pour le trimestre à venir.",
+  "type": "information",
+  "dateDebut": "2024-01-15",
+  "dateFin": "2024-03-15"
+}
+```
+
+### GET /api/publications
+**Headers:**
+- Authorization: Bearer <token>
+
+### GET /api/publications/:id
+**Headers:**
+- Authorization: Bearer <token>
+
+### PUT /api/publications/:id
+**Headers:**
+- Authorization: Bearer <token>
+- Content-Type: application/json
+
+**Body:**
+```json
+{
+  "statut": "en cours",
+  "titre": "Nouvelle politique RH - Mise à jour"
+}
+```
+
+### DELETE /api/publications/:id
+**Headers:**
+- Authorization: Bearer <token>
+
+## Message Routes (`/api/messages`)
+
+### POST /api/messages
+**Headers:**
+- Authorization: Bearer <token>
+- Content-Type: application/json
+
+**Body:**
+```json
+{
+  "titre": "Réunion importante",
+  "contenu": "N'oubliez pas la réunion de demain à 10h dans la salle de conférence.",
+  "dateDebut": "2024-01-16T10:00:00.000Z",
+  "dateFin": "2024-01-16T11:00:00.000Z",
+  "statut": "programmée"
+}
+```
+
+### GET /api/messages
+**Headers:**
+- Authorization: Bearer <token>
+
+### GET /api/messages/:id
+**Headers:**
+- Authorization: Bearer <token>
+
+### PUT /api/messages/:id
+**Headers:**
+- Authorization: Bearer <token>
+- Content-Type: application/json
+
+**Body:**
+```json
+{
+  "statut": "en cours",
+  "contenu": "Réunion reportée à 11h en raison d'un conflit d'horaire."
+}
+```
+
+### DELETE /api/messages/:id
+**Headers:**
+- Authorization: Bearer <token>
+
+## Notification Routes (`/api/notifications`)
+
+### GET /api/notifications
+**Headers:**
+- Authorization: Bearer <token>
+
+### PUT /api/notifications/:id/read
+**Headers:**
+- Authorization: Bearer <token>
+
+### POST /api/notifications (Optional - Admin/System)
+**Headers:**
+- Authorization: Bearer <token>
+- Content-Type: application/json
+
+**Body:**
+```json
+{
+  "destinataire": "68b2f2fca9dbdda4c5d040f1",
+  "description": "Vous avez un nouveau message",
+  "type": "message",
+  "referenceId": "68b3034e811b092598680db0"
+}
+```
+
+## Important Notes
+
+1. All routes (except `/api/auth/register` and `/api/auth/login`) require an Authorization header with a valid JWT token
+2. The actual IDs used in the URLs will vary based on your database records
+3. For PUT requests, you only need to include the fields you want to update
+4. The notification creation endpoint may be restricted to admin users only
+5. Remember to replace `<YOUR_PORT>` with your actual server port (commonly 3000, 5000, or 8000)
+
+This summary provides a quick reference for all the routes you've tested so far, including the required request bodies for POST operations.
