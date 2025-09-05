@@ -1,0 +1,51 @@
+<div class="sidebar">
+
+  <button (click)="navigate('/dashboard')" [class.active]="isActive('/dashboard')">dashboard</button>
+  <!-- <button (click)="navigate('/profile')" [class.active]="isActive('/profile')">profile</button> -->
+  <button (click)="navigate('/tables')" [class.active]="isActive('/tables')">tables</button>
+  <button (click)="navigate('/pubs')" [class.active]="isActive('/pubs')">pubs</button>
+  <button (click)="navigate('/users')" [class.active]="isActive('/users')">users</button>
+  <button (click)="toggleUsers()" [class.active]="IsUsersExpanded">
+    manage users
+    <span>{{ IsUsersExpanded ? '▲' : '▼' }}</span>  
+  </button>
+
+  <div *ngIf="IsUsersExpanded" class="submenu">
+    <button (click)="navigate('users-list')">users list</button>
+    <button (click)="navigate('role-manger')">role manager</button>
+  </div>
+  <!-- Département toggle button -->
+  <button (click)="toggleDepartement()" [class.active]="isActive('departements/')">
+    départements
+    <span>{{ isDepartementExpanded ? '▲' : '▼' }}</span>
+  </button>
+
+  <!-- Submenu for departments -->
+  <div *ngIf="isDepartementExpanded" class="submenu">
+    <button (click)="navigate('departements/RH')">RH</button>
+    <button (click)="navigate('departements/IT')">IT</button>
+    <button (click)="navigate('departements/Maintenance')">Maintenance</button>
+    <button (click)="navigate('departements/Qualite')">Qualité</button>
+    <button (click)="navigate('departements/HSEEn')">HSEEn</button>
+  </div>
+
+  <button (click)="navigate('/calendar')" [class.active]="isActive('/calendar')">calendrier</button>
+
+</div>
+
+<style>
+    .submenu {
+  margin-left: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.submenu button {
+  padding-left: 1rem;
+  font-size: 0.9rem;
+  background-color: #f9f9f9;
+  border: none;
+  text-align: left;
+}
+
+</style>

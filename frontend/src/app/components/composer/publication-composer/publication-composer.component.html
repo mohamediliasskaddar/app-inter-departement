@@ -1,0 +1,71 @@
+<form [formGroup]="publicationForm" (ngSubmit)="submitPublication()" class="publication-composer">
+  
+  <!-- Select type first -->
+  <div>
+    <label for="type">Type de publication :</label>
+    <select id="type" formControlName="type">
+      <option value="">-- Choisir un type --</option>
+      <option value="reclamation">Réclamation</option>
+      <option value="demande">Demande</option>
+      <option value="incident">Incident</option>
+      <option value="audit">Audit</option>
+      <option value="information">Information</option>
+      <option value="autre">Autre</option>
+    </select>
+  </div>
+
+  <!-- Only show other fields once a type is selected -->
+  <div *ngIf="type">
+    <div>
+      <label for="titre">{{ labelMap[type]?.title || labelMap['default'].title }}</label>
+      <input id="titre" type="text" formControlName="titre" required />
+    </div>
+
+    <div>
+      <label for="description">{{ labelMap[type]?.content || labelMap['default'].content }}</label>
+      <textarea id="description" formControlName="description" required></textarea>
+    </div>
+
+    <div>
+      <label for="dateDebut">{{ labelMap[type]?.dateDebut || labelMap['default'].dateDebut }}</label>
+      <input id="dateDebut" type="date" formControlName="dateDebut" />
+    </div>
+
+    <div>
+      <label for="dateFin">{{ labelMap[type]?.dateFin || labelMap['default'].dateFin }}</label>
+      <input id="dateFin" type="date" formControlName="dateFin" />
+    </div>
+
+    <div>
+      <label for="statut">{{ labelMap[type]?.statut || labelMap['default'].statut }}</label>
+      <select id="statut" formControlName="statut">
+        <option value="ouverte">Ouverte</option>
+        <option value="en cours">En cours</option>
+        <option value="traitée">Traitée</option>
+        <option value="fermée">Fermée</option>
+      </select>
+    </div>
+
+    <!-- <div>
+      <label for="departement">{{ labelMap[type]?.departement || labelMap['default'].departement }}</label>
+      <input id="departement" type="text" formControlName="departement" />
+    </div> -->
+
+    <div>
+      <label for="image">Image (optionnel) :</label>
+      <input id="image" type="file" (change)="onFileChange($event)" />
+    </div>
+
+    <div>
+      <button type="submit" [disabled]="publicationForm.invalid">Publier</button>
+    </div>
+
+    <!-- Success and error messages -->
+    <div *ngIf="successMessage" class="success-message">
+      {{ successMessage }}
+    </div>
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+  </div>
+</form>

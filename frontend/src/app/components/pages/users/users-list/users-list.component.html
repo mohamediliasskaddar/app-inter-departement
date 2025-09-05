@@ -1,0 +1,61 @@
+<!-- users-list.component.html -->
+<div class="container mt-4">
+
+  <h2>Users Management</h2>
+
+  <div *ngIf="isLoading" class="alert alert-info">
+    Loading users...
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <div class="mb-3 d-flex gap-3">
+  <div>
+    <label for="roleFilter">Filter by Role:</label>
+    <select id="roleFilter" class="form-control" [(ngModel)]="selectedRole">
+      <option value="">All</option>
+      <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+    </select>
+  </div>
+
+  <div>
+    <label for="departmentFilter">Filter by Department:</label>
+    <select id="departmentFilter" class="form-control" [(ngModel)]="selectedDepartment">
+      <option value="">All</option>
+      <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
+    </select>
+  </div>
+</div>
+
+  <table class="table table-bordered table-striped" *ngIf="!isLoading && users.length > 0">
+    <thead class="thead-dark">
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Department</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+          <tr *ngFor="let user of filteredUsers()">
+      <td>{{ user.nom }}</td>
+      <td>{{ user.email }}</td>
+      <td>{{ user.role }}</td>
+      <td>{{ user.departement }}</td>
+      <td>
+        <button class="btn btn-sm btn-primary" (click)="editUser(user._id)">Edit</button>
+        <button class="btn btn-sm btn-danger" (click)="deleteUser(user._id)">Delete</button>
+      </td>
+    </tr>
+
+    </tbody>
+  </table>
+
+  <div *ngIf="!isLoading && users.length === 0" class="alert alert-warning">
+    No users found.
+  </div>
+
+</div>

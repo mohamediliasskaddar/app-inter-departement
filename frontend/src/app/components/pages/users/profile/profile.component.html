@@ -1,0 +1,68 @@
+<div class="container mt-4">
+  <h2>My Profile</h2>
+
+  <div *ngIf="isLoading" class="alert alert-info">Loading profile...</div>
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+
+  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" *ngIf="!isLoading">
+
+    <!-- Name -->
+    <div class="mb-3 d-flex align-items-center justify-content-between">
+      <label class="form-label me-2">Name:</label>
+      <div class="flex-grow-1">
+        <ng-container *ngIf="!isEditingName; else editName">
+          <span>{{ profileForm.value.nom }}</span>
+        </ng-container>
+        <ng-template #editName>
+          <input type="text" class="form-control" formControlName="name" />
+        </ng-template>
+      </div>
+      <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="isEditingName = !isEditingName">
+        ✏️
+      </button>
+    </div>
+
+    <!-- Email -->
+    <div class="mb-3 d-flex align-items-center justify-content-between">
+      <label class="form-label me-2">Email:</label>
+      <div class="flex-grow-1">
+        <ng-container *ngIf="!isEditingEmail; else editEmail">
+          <span>{{ profileForm.value.email }}</span>
+        </ng-container>
+        <ng-template #editEmail>
+          <input type="email" class="form-control" formControlName="email" />
+        </ng-template>
+      </div>
+      <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="isEditingEmail = !isEditingEmail">
+        ✏️
+      </button>
+    </div>
+
+    <!-- Department -->
+    <div class="mb-3 d-flex align-items-center justify-content-between">
+      <label class="form-label me-2">Department:</label>
+      <div class="flex-grow-1">
+        <ng-container *ngIf="!isEditingDepartment; else editDept">
+          <span>{{ profileForm.value.departement }}</span>
+        </ng-container>
+        <ng-template #editDept>
+          <select formControlName="department" class="form-control">
+            <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
+          </select>
+        </ng-template>
+      </div>
+      <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="isEditingDepartment = !isEditingDepartment">
+        ✏️
+      </button>
+    </div>
+
+    <!-- Role (Read-only) -->
+    <div class="mb-3">
+      <label class="form-label">Role:</label>
+      <input type="text" class="form-control" formControlName="role"  />
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
+  </form>
+</div>

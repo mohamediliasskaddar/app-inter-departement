@@ -1,0 +1,45 @@
+<form (ngSubmit)="submitMessage()">
+  <label>
+    Title:
+    <input type="text" [(ngModel)]="message.titre" name="titre" required />
+  </label>
+
+  <label>
+    Content:
+    <textarea [(ngModel)]="message.contenu" name="contenu" required></textarea>
+  </label>
+
+  <label>
+    Department (optional):
+    <input type="text" [(ngModel)]="message.departement" name="departement" />
+  </label>
+  <label>
+  Status:
+  <select [(ngModel)]="message.statut" name="statut" required>
+    <option value="à venir">À venir</option>
+    <option value="en cours">En cours</option>
+    <option value="terminée">Terminée</option>
+    <option value="programmée">Programmée</option>
+    <option value="tache">Tâche</option>
+  </select>
+</label>
+
+<label for="dateDebut">Start Date & Time:</label>
+  <input
+    id="dateDebut"
+    type="datetime-local"
+    [(ngModel)]="message.dateDebut"
+    name="dateDebut"
+  />
+
+  <label for="dateFin">End Date & Time:</label>
+  <input
+    id="dateFin"
+    type="datetime-local"
+    [(ngModel)]="message.dateFin"
+    name="dateFin"
+  />
+
+
+<button type="submit">Send Message</button>
+</form>

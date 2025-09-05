@@ -1,0 +1,62 @@
+<div class="register-container">
+  <h2>Créer un compte</h2>
+
+  <form [formGroup]="registerForm" (ngSubmit)="register()">
+    <div>
+  <label>Nom</label>
+  <input formControlName="nom" />
+  <div *ngIf="f['nom'].touched && f['nom'].invalid" class="error">
+    <small *ngIf="f['nom'].errors && f['nom'].errors['required']">Le nom est requis.</small>
+  </div>
+</div>
+ <!-- Email -->
+    <div>
+      <label for="email">Email :</label>
+      <input type="email" id="email" formControlName="email" />
+      <div *ngIf="f['email'].touched && f['email'].invalid" class="error">
+       <small *ngIf="f['email'].errors?.['required']">L'email est requis.</small>
+        <small *ngIf="f['email'].errors?.['email']">Format d'email invalide.</small>
+      </div>
+    </div>
+
+    <!-- Password -->
+    <div>
+      <label for="password">Mot de passe :</label>
+      <input type="password" id="password" formControlName="password" />
+      <div *ngIf="f['password'].touched && f['password'].invalid" class="error">
+        <small *ngIf="f['password'].errors?.['required']">Le mot de passe est requis.</small>
+        <small *ngIf="f['password'].errors?.['minlength']">
+          Le mot de passe doit contenir au moins 6 caractères.
+        </small>
+      </div>
+    </div>
+
+    <!-- Département -->
+    <div>
+      <label for="departement">Département :</label>
+      <select id="departement" formControlName="departement">
+        <option value="" disabled>Choisir un département</option>
+        <option *ngFor="let dept of departements" [value]="dept._id">{{ dept.nom }}</option>
+      </select>
+      <div *ngIf="f['departement'].touched && f['departement'].invalid" class="error">
+        <small *ngIf="f['departement'].errors?.['required']">Le département est requis.</small>
+      </div>
+    </div>
+
+    <!-- Role -->
+    <div>
+      <label>Rôle :</label>
+      <input value="En attente" formControlName="role"  />
+      <small>(Attribué par l'administrateur)</small>
+    </div>
+
+    <!-- Submit button -->
+    <button type="submit" [disabled]="registerForm.invalid">S'inscrire</button>
+  </form>
+
+  <!-- Messages -->
+  <p class="success" *ngIf="successMessage">{{ successMessage }}</p>
+  <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+  <p>Déjà inscrit ? <a routerLink="/login">Se connecter</a></p>
+</div>
