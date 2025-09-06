@@ -5,14 +5,16 @@ import { DatePipe, NgFor, NgIf, SlicePipe } from '@angular/common';
 import { UserService } from '../../../services/user.service';
 import { PublicationsService } from '../../../services/publications.service';
 import { NotificationsService } from '../../../services/notifications.service';
-import { REACTIVE_NODE } from '@angular/core/primitives/signals';
-import {NotRes} from '../../../utils/models';  
 import { RouterLink } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { PublicationComposerComponent } from '../../composer/publication-composer/publication-composer.component';
+import { TableauComposerComponent } from '../../composer/tableau-composer/tableau-composer.component';
+import { MessageComposerComponent } from '../../composer/message-composer/message-composer.component';  
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [NgIf, NgFor, DatePipe, SlicePipe, RouterLink ],
+  imports: [NgIf, NgFor, DatePipe, SlicePipe ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'] 
 })
@@ -29,6 +31,7 @@ export class DashboardComponent implements OnInit {
     private userService: UserService,
     private pubs: PublicationsService,
     private nots: NotificationsService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
@@ -58,5 +61,39 @@ export class DashboardComponent implements OnInit {
       console.log('Notifications reçues:', data);
     });
 
+  }
+   openCreatePublicationDialog(): void {
+    const dialogRef = this.dialog.open(PublicationComposerComponent, {
+      width: '600px', // or 80%, 500px, etc.
+      disableClose: true, // Prevent click-outside to close
+      panelClass: 'pub-dialog'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      // Optionally reload publications after creation
+      this.ngOnInit();
+    });
+  }
+  openCreateTableauDialog(): void {
+    const dialogRef = this.dialog.open(TableauComposerComponent, {
+      width: '600px', // or 80%, 500px, etc.
+      disableClose: true, // Prevent click-outside to close
+      panelClass: 'tab-dialog'
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      // Optionally reload tableaux after creation
+      this.ngOnInit();
+    });
+  }
+  openCreateMessageDialog(): void {
+    const dialogRef = this.dialog.open(MessageComposerComponent, {
+      width: '600px', // or 80%, 500px, etc.
+      disableClose: true, // Prevent click-outside to close
+      panelClass: 'msg-dialog'
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      // Optionally reload messages after creation
+      this.ngOnInit();
+    });
   }
 }

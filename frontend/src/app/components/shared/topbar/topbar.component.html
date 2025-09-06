@@ -3,7 +3,10 @@
     <h4>App Inter Département</h4>
   </div>
   <div class="nav-links">
-    <a routerLink="/profile" routerLinkActive="active">Profile |</a>
+    <!-- <a routerLink="/profile" routerLinkActive="active">Profile |</a> -->
+    <button  (click)="openCreateProfileDialog()" class="btn btn-primary mb-3">
+      mon profile 
+    </button>
     <a routerLink="/login" routerLinkActive="active"> deconnexion |</a>
     <a routerLink="/notification" routerLinkActive="active"> notification |</a>
   </div>

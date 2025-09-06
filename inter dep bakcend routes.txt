@@ -169,3 +169,9 @@ inter dep bakcend routes
 5. Remember to replace `<YOUR_PORT>` with your actual server port (commonly 3000, 5000, or 8000)
 
 This summary provides a quick reference for all the routes you've tested so far, including the required request bodies for POST operations.
+
+
+
+
+const path = require('path');
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));

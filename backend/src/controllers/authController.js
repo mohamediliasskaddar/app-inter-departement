@@ -2,6 +2,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const Notification = require('../models/Notification');
 
 exports.register = async (req, res) => {
   try {
@@ -13,6 +14,13 @@ exports.register = async (req, res) => {
 
     const hash = await bcrypt.hash(password, 10);
     const user = await User.create({ nom, email, password: hash, departement });
+    // Create a notification for new user registration
+    await Notification.create({
+      destinataire: null, // null = broadcast to all (handled in frontend or query logic)
+      description: `Nouvel utilisateur inscrit: ${user.nom} (${user.email})`,
+      type: " NewUser",
+      referenceId: user._id
+    });
     res.status(201).json({ id: user._id, nom: user.nom, email: user.email });
   } catch (err) {
     res.status(500).json({ error: err.message });

@@ -16,6 +16,8 @@ import { PublicationComposerComponent } from './components/composer/publication-
 import { MessageComposerComponent } from './components/composer/message-composer/message-composer.component';
 import { UsersListComponent } from './components/pages/users/users-list/users-list.component';
 import { RoleManagerComponent } from './components/pages/users/role-manager/role-manager.component';
+import { PublicationsComponent } from './components/pages/publications/publications.component';
+import { TableauxComponent } from './components/pages/tableaux/tableaux.component';
 
 export const routes: Routes = [{
     path: '',
@@ -32,13 +34,15 @@ export const routes: Routes = [{
         {path: 'departements/Maintenance', component:MaintenanceComponent}, 
         {path: 'role-manger', component:RoleManagerComponent } , 
         {path: 'users-list', component:UsersListComponent } ,
-
+        {path: 'publications', component:PublicationsComponent }  ,
+        {path: 'tableaux', component:TableauxComponent }  ,
       //   {path: '', component: }  
 
 
       //composer component will be here
        {path:'pubComposer', component:PublicationComposerComponent },  
        {path:'msgComposer', component:MessageComposerComponent }  ,
+       {path: 'tabComposer', component: TableauComposerComponent}  
       //   {path: '', component: }  
 
       

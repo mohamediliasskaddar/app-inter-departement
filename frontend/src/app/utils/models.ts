@@ -3,6 +3,7 @@ export interface IColonne {
   _id: string;
   nom: string;
   type: 'texte' | 'nombre';
+  lignes?: ILigne[]; 
 }
 
 export interface ICellule {
@@ -19,12 +20,11 @@ export interface ILigne {
 export interface ITableau {
   _id: string;
   titre: string;
-  auteur: string;
+  auteur: IUser; 
   departement: string;
   colonnes: IColonne[];
   lignes: ILigne[];
 }
-
 
 export interface IUser {
   _id: string;
@@ -42,7 +42,7 @@ export interface IPublication {
   titre: string;
   description: string;
   type: "reclamation" | "demande" | "incident" | "audit" | "information" | "autre";
-  auteur: string; // Peut être IUser si peuplé
+  auteur: IUser; 
   departement: string;
   image?: string;
   dateDebut?: string;
@@ -54,7 +54,7 @@ export interface IPublication {
 
 export interface INotification {
   _id: string;
-  destinataire: IUser; // Peut être IUser si peuplé
+  destinataire: IUser; 
   description: string;
   type: "nouvellePublication" | "tacheAssignée" | "message" | "info";
   referenceId?: string;
@@ -69,12 +69,12 @@ export interface IMessage {
   _id: string;
   titre: string;
   contenu: string;
-  auteur: IUser; // Peut être IUser si peuplé
+  auteur: IUser;
   departement: string;
   dateDebut?: string;
   dateFin?: string;
   deleted: boolean;
-  statut: "à venir" | "en cours" | "terminée" | "programmée"| "tache"; //progrmammée: pour le caledrier et tache pour les taches
+  statut: "à venir" | "en cours" | "terminée" | "programmée"| "tache"; 
 }
 
 export interface IDepartement {

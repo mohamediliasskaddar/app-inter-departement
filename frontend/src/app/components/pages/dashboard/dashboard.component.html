@@ -46,6 +46,14 @@
         <strong>{{ pub.titre }}</strong> – {{ pub.type }} – {{ pub.date | date:'short' }}<br>
         {{ pub.auteur.nom }} {{ pub.auteur.prenom }} – {{ pub.auteur.role }}<br>
         {{ pub.description }} – {{ pub.statut }}
+
+        <p>{{pub.image}} </p>
+
+        <img *ngIf="pub.image"
+     [src]="'http://localhost:3000/' + pub.image"
+     alt="Publication image"
+     class="img-fluid" />
+
       </li>
     </ul>
   </section>
@@ -65,8 +73,21 @@
   <section class="quick-actions">
     <!-- Add buttons or links for quick actions -->
     
-     <a routerLink="/pubComposer" routerLinkActive="active">new pub</a>
-      <a routerLink="/msgComposer" routerLinkActive="active">new msg</a>
+     <!-- <a routerLink="/pubComposer" routerLinkActive="active">new pub</a> -->
+      <button (click)="openCreatePublicationDialog()" class="btn btn-success mb-3">
+         Créer une publication
+    </button>
+
+    <button
+      (click)="openCreateMessageDialog()" class="btn btn-primary mb-3">
+       Composer un message
+    </button>
+    <button
+      (click)="openCreateTableauDialog()" class="btn btn-primary mb-3"> 
+       Composer un tableau
+    </button>
+      <!-- <a routerLink="/msgComposer" routerLinkActive="active">|new msg</a>
+      <a routerLink="/tabComposer" routerLinkActive="active"> |new tab</a> -->
     <!-- Example: New Publication, New Task, New Message -->
   </section>
 

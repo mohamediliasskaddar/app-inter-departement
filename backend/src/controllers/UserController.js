@@ -1,5 +1,6 @@
 // src/controllers/userController.js
 const User = require('../models/User');
+const Notification = require('../models/Notification');
 
 exports.list = async (req, res) => {
   try {
@@ -29,6 +30,13 @@ exports.delete = async (req, res) => {
   try {
     const deleted = await User.findByIdAndDelete(req.params.id).select('-password');
     res.json(deleted);
+    //create a notification about deletion
+    await Notification.create({
+      destinataire: null,
+      description: `Utilisateur supprimé: ${deleted.nom} (${deleted.email})`,
+      type: "DelUser",
+      referenceId: deleted._id
+    });
   } catch (err) { res.status(500).json({ error: err.message }); } 
 }
 
@@ -54,26 +62,13 @@ exports.getMe = async (req, res) => {
   }
 };
 
-// // Update current user info 
-// exports.updateMe = async (req, res) => {
-//   try {
-//     const userId = req.user.id;
-//     const updateData = {};
-//     if (req.body.name) updateData.name = req.body.name; 
-//     if (req.body.departement) updateData.departement = req.body.departement;
-//     const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true }).select('-password');
-//     if (!updatedUser) return res.status(404).json({ message: 'User not found' });
-//     res.json(updatedUser);
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-//   } 
-// };
+
 
 // Update current user info
 exports.updateMe = async (req, res) => {
   try {
     const userId = req.user.id;
-    const allowedFields = ['name', 'email' ,'department']; // restrict editable fields
+    const allowedFields = ['nom', 'email' ,'departement']; // restrict editable fields
     const updates = {};
 
     allowedFields.forEach(field => {

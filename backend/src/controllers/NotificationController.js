@@ -1,12 +1,7 @@
 // src/controllers/notificationController.js
 const Notification = require('../models/Notification');
 
-// exports.listForUser = async (req, res) => {
-//   try {
-//     const notifs = await Notification.find({ destinataire: req.user._id }).sort({ dateEnvoi: -1 });
-//     res.json(notifs);
-//   } catch (err) { res.status(500).json({ error: err.message }); }
-// };
+
 
 exports.listForUser = async (req, res) => {
   try {

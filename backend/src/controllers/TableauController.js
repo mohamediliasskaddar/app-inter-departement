@@ -1,11 +1,10 @@
 // src/controllers/tableauController.js
-// safeCreateOneShot.js (controller)
-// src/controllers/tableauController.js (corrigé)
 const mongoose = require('mongoose');
 const Tableau = require('../models/Tableau');
 const Colonne = require('../models/Colonne');
 const Ligne = require('../models/Ligne');
 const ValeurCellule = require('../models/ValeurCellule');
+const Notification = require('../models/Notification');
 const { serverSupportsTransactions } = require('../utils/mongoUtils');
 
 function validateValueType(type, value) {
@@ -15,16 +14,6 @@ function validateValueType(type, value) {
   if (type === 'date') return !isNaN(new Date(value).getTime());
   return true;
 }
-
-// async function serverSupportsTransactions() {
-//   try {
-//     const admin = mongoose.connection.db.admin();
-//     const info = await admin.command({ ismaster: 1 });
-//     return !!info.setName;
-//   } catch (err) {
-//     return false;
-//   }
-// }
 
 exports.createOneShot = async (req, res) => {
   const supportsTransactions = await serverSupportsTransactions();
@@ -160,6 +149,14 @@ exports.createOneShot = async (req, res) => {
       .populate('colonnes')
       .populate({ path: 'lignes', populate: { path: 'valeurs', populate: { path: 'colonne' } } });
 
+    //Notification for all users about new tableau
+      await Notification.create({
+      destinataire: null, // null = broadcast to all (handled in frontend or query logic)
+      description: `Nouveau tableau créé: ${tableauDoc.titre}`,
+      type: "NewTab",
+      referenceId: createdTableau._id
+    });
+
     return res.status(201).json(result);
 
   } catch (err) {
@@ -243,6 +240,14 @@ exports.deleteCascade = async (req, res) => {
       await Tableau.findByIdAndDelete(tableId);
     }
 
+    //create a notification about deletion
+    await Notification.create({
+      destinataire: null,
+      description: `Tableau supprimé: ${table.titre}`,
+      type: "DelTab",
+      referenceId: table._id
+    });
+
     return res.json({ message: 'Tableau et données associées supprimés' });
 
   } catch (err) {
@@ -256,60 +261,37 @@ exports.deleteCascade = async (req, res) => {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exports.create = async (req, res) => {
-  try {
-    const { titre, typeGraph, colonnes = [], lignes = [] } = req.body;
-    const auteur = req.user._id;
-    const departement = req.user.departement;
-
-    // créer colonnes si fournies (array d'objets {nom,type}) et récupérer leurs ids
-    const createdCols = [];
-    for (const c of colonnes) {
-      const col = await Colonne.create({ nom: c.nom, type: c.type });
-      createdCols.push(col._id);
-    }
-
-    // créer lignes (non-natives) : ici on crée lignes vides; si tu veux initialiser valeurs -> envoyer structure
-    const createdLines = [];
-    for (const l of lignes) {
-      // chaque l peut contenir valeurs comme [{colonne: colId, valeur: ...}, ...]
-      const newLine = await Ligne.create({ valeurs: [] });
-      if (Array.isArray(l.valeurs) && l.valeurs.length) {
-        const cells = await Promise.all(l.valeurs.map(v => ValeurCellule.create({ colonne: v.colonne, valeur: v.valeur })));
-        newLine.valeurs = cells.map(c => c._id);
-        await newLine.save();
-      }
-      createdLines.push(newLine._id);
-    }
-
-    const table = await Tableau.create({
-      titre,
-      auteur,
-      departement,
-      typeGraph,
-      colonnes: createdCols,
-      lignes: createdLines
-    });
-
-    res.status(201).json(await Tableau.findById(table._id)
-      .populate({ path: 'colonnes' })
-      .populate({ path: 'lignes', populate: { path: 'valeurs', populate: { path: 'colonne' } } }));
-  } catch (err) { res.status(500).json({ error: err.message }); }
-};
 
 exports.list = async (req, res) => {
   try {
     const filter = {};
     if (req.query.departement) filter.departement = req.query.departement;
-    const tables = await Tableau.find(filter).populate('auteur', 'nom').select('-__v');
+
+    const tables = await Tableau.find(filter)
+      .populate('auteur', 'nom email role')
+      .populate('colonnes')
+      .populate({
+        path: 'lignes',
+        populate: {
+          path: 'valeurs',
+          populate: {
+            path: 'colonne'
+          }
+        }
+      })
+      .select('-__v');
+
     res.json(tables);
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
+
 
 exports.get = async (req, res) => {
   try {
     const t = await Tableau.findById(req.params.id)
-      .populate('auteur', 'nom email')
+      .populate('auteur', 'nom email role')
       .populate('colonnes')
       .populate({ path: 'lignes', populate: { path: 'valeurs', populate: { path: 'colonne' } } });
     if (!t) return res.status(404).json({ message: 'Tableau introuvable' });
@@ -329,34 +311,3 @@ exports.update = async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 };
 
-exports.delete = async (req, res) => {
-  try {
-    const id = req.params.id;
-    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(400).json({ message: 'Id invalide' });
-
-    const table = await Tableau.findById(id);
-    if (!table) return res.status(404).json({ message: 'Tableau introuvable' });
-
-    // supprimer cascade : cellules -> lignes -> colonnes -> tableau
-    // 1) supprimer cellules des lignes
-    const lignesIds = table.lignes || [];
-    for (const ligneId of lignesIds) {
-      const ligne = await Ligne.findById(ligneId);
-      if (ligne && ligne.valeurs && ligne.valeurs.length) {
-        await ValeurCellule.deleteMany({ _id: { $in: ligne.valeurs } });
-      }
-    }
-    // 2) supprimer lignes
-    await Ligne.deleteMany({ _id: { $in: lignesIds } });
-
-    // 3) supprimer colonnes
-    if (table.colonnes && table.colonnes.length) {
-      await Colonne.deleteMany({ _id: { $in: table.colonnes } });
-    }
-
-    // 4) supprimer le tableau
-    await Tableau.findByIdAndDelete(id);
-
-    res.json({ message: 'Tableau et données associées supprimés' });
-  } catch (err) { res.status(500).json({ error: err.message }); }
-};

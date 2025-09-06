@@ -22,7 +22,7 @@ app.use('/api/notifications', require('./routes/NotificationRoute.js'));
 app.use('/api/colonnes', require('./routes/ColonneRoute.js'));
 app.use('/api/lignes', require('./routes/LigneRoute'));
 app.use('/api/valeurs', require('./routes/ValeurCelluleRoute.js'));
-app.use('/api/tableaux', require('./routes/tableauRoute'));
+app.use('/api/tableaux', require('./routes/tableauRoute.js'));
 
 
 // ✅ Global error handler — MUST be the last middleware

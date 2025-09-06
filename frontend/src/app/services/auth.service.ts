@@ -50,7 +50,7 @@ export class AuthService {
 
   try {
     const decoded: any = jwtDecode(token);
-    console.log('decoded token:', decoded);
+    // console.log('decoded token:', decoded);
 
     const user: IUser = {
       _id: decoded.id,

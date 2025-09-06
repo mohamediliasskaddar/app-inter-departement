@@ -1,0 +1,9 @@
+/* styles.css or pub-composer.component.css */
+.modal-container {
+  padding: 20px;
+}
+
+.pub-dialog .mat-dialog-container {
+  padding: 0;
+  border-radius: 8px;
+}

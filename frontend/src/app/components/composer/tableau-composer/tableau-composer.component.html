@@ -1,3 +1,54 @@
-<p>
-  tableau-composer works!
-</p>
+<div class="container mt-4">
+  <h3>Composer un tableau</h3>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+
+    <div class="form-group mb-3">
+      <label>Titre</label>
+      <input class="form-control" formControlName="titre" />
+    </div>
+
+    <!-- Colonnes -->
+    <h5>Colonnes</h5>
+    <div *ngFor="let col of colonnes.controls; let i = index" [formGroup]="col" class="row mb-2">
+      <div class="col">
+        <input class="form-control" placeholder="Nom colonne" formControlName="nom" />
+      </div>
+      <div class="col">
+        <select class="form-control" formControlName="type">
+          <option *ngFor="let type of types" [value]="type">{{ type }}</option>
+        </select>
+      </div>
+      <div class="col-auto">
+        <button type="button" class="btn btn-danger" (click)="removeColonne(i)">X</button>
+      </div>
+    </div>
+    <button class="btn btn-primary mb-3" type="button" (click)="addColonne()">Ajouter colonne</button>
+
+    <!-- Lignes -->
+    <h5>Lignes</h5>
+    <div *ngFor="let ligne of lignes.controls; let i = index" class="row mb-2">
+      <div class="col" *ngFor="let col of colonnes.controls; let j = index">
+        <ng-container [ngSwitch]="col.get('type')?.value">
+          <input *ngSwitchCase="'texte'" class="form-control" [formControl]="getValeurControl(i, j)" />
+          <input *ngSwitchCase="'nombre'" type="number" class="form-control" [formControl]="getValeurControl(i, j)" />
+          <input *ngSwitchCase="'date'" type="date" class="form-control" [formControl]="getValeurControl(i, j)" />
+          <select *ngSwitchCase="'booleen'" class="form-control" [formControl]="getValeurControl(i, j)">
+            <option [value]="true">Oui</option>
+            <option [value]="false">Non</option>
+          </select>
+        </ng-container>
+      </div>
+      <div class="col-auto">
+        <button type="button" class="btn btn-danger" (click)="removeLigne(i)">X</button>
+      </div>
+    </div>
+    <button class="btn btn-primary mb-3" type="button" (click)="addLigne()">Ajouter ligne</button>
+
+    <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+    <div *ngIf="success" class="alert alert-success">{{ success }}</div>
+
+    <button type="submit" class="btn btn-success" [disabled]="submitting">Créer</button>
+  </form>
+  <button (click)="closeDialog()">❌ Fermer</button>
+</div>

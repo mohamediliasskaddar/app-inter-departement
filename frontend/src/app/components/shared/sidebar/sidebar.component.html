@@ -1,10 +1,8 @@
 <div class="sidebar">
 
   <button (click)="navigate('/dashboard')" [class.active]="isActive('/dashboard')">dashboard</button>
-  <!-- <button (click)="navigate('/profile')" [class.active]="isActive('/profile')">profile</button> -->
-  <button (click)="navigate('/tables')" [class.active]="isActive('/tables')">tables</button>
-  <button (click)="navigate('/pubs')" [class.active]="isActive('/pubs')">pubs</button>
-  <button (click)="navigate('/users')" [class.active]="isActive('/users')">users</button>
+  <button (click)="navigate('/tableaux')" [class.active]="isActive('/tableaux')">tables</button>
+  <button (click)="navigate('/publications')" [class.active]="isActive('/pubs')">pubs</button>
   <button (click)="toggleUsers()" [class.active]="IsUsersExpanded">
     manage users
     <span>{{ IsUsersExpanded ? '▲' : '▼' }}</span>  

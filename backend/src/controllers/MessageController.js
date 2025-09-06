@@ -1,6 +1,6 @@
 // src/controllers/messageController.js
 const Message = require('../models/Message');
-
+const Notification = require('../models/Notification');
 
 exports.create = async (req, res) => {
   try {
@@ -9,6 +9,14 @@ exports.create = async (req, res) => {
     // if you want message always for the user's department:
     data.departement = data.departement || req.user.departement;
     const msg = await Message.create(data);
+    // Create a notification for new message
+    await Notification.create({
+      destinataire: null, // null = broadcast to all (handled in frontend or query logic)
+      description: `Nouveau message: ${msg.sujet}`,
+      type: "NewMsg",
+      referenceId: msg._id
+    });
+
     res.status(201).json(msg);
   } catch (err) { res.status(500).json({ error: err.message }); }
 };
@@ -32,6 +40,14 @@ exports.update = async (req, res) => {
 exports.delete = async (req, res) => {
   try {
     const msg = await Message.findByIdAndUpdate(req.params.id, { deleted: true }, { new: true });
+    //create a notification about deletion
+    await Notification.create({
+      destinataire: null,
+      description: `Message supprimé: ${msg.sujet}`,
+      type: "DelMsg",
+      referenceId: msg._id
+    }); 
+    
     res.json(msg);
   } catch (err) { res.status(500).json({ error: err.message }); }
 };

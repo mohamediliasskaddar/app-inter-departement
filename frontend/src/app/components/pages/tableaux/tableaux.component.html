@@ -1,0 +1,58 @@
+<!-- ADD NEW tableau  -->
+      <!-- <a routerLink="/tabComposer" routerLinkActive="active"> |new tab</a> -->
+<div class="containner">
+      <button
+      (click)="openCreateTableauDialog()" class="btn btn-primary mb-3"> 
+      ➕ Composer un tableau
+      </button>
+<div *ngFor="let tableau of tableaux" class="card mb-4">
+  <div class="card-header d-flex justify-content-between">
+    <h5>{{ tableau.titre }}</h5>
+    <h4>{{ tableau.departement}}</h4>
+    <div>
+      <span class="text-muted">Auteur: {{ tableau.auteur.nom }} ({{ tableau.auteur.email }}) - {{ tableau.auteur.role }}</span>
+      <button *ngIf="isAuthor(tableau)" class="btn btn-sm btn-primary ms-3" (click)="toggleEdit(tableau._id)">
+        {{ editMode[tableau._id] ? 'Annuler' : 'Modifier' }}
+      </button>
+      <button *ngIf="editMode[tableau._id]" class="btn btn-sm btn-success ms-2" (click)="saveChanges(tableau._id)">
+        Sauvegarder
+      </button>
+
+    </div>
+  </div>
+
+  <div class="card-body table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th *ngFor="let col of tableau.colonnes">{{ col.nom }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let ligne of tableau.lignes">
+              <td *ngFor="let valeur of ligne.valeurs; let colIndex = index">
+                <ng-container *ngIf="editMode[tableau._id]; else displayValue">
+                  <ng-container [ngSwitch]="tableau.colonnes[colIndex].type">
+                    <input *ngSwitchCase="'texte'" class="form-control" [formControl]="cellForms[valeur._id]" (blur)="updateCell(valeur._id, tableau.colonnes[colIndex].type)" />
+                    <input *ngSwitchCase="'nombre'" type="number" class="form-control" [formControl]="cellForms[valeur._id]" (blur)="updateCell(valeur._id, tableau.colonnes[colIndex].type)" />
+                    <input *ngSwitchCase="'date'" type="date" class="form-control" [formControl]="cellForms[valeur._id]" (blur)="updateCell(valeur._id, tableau.colonnes[colIndex].type)" />
+                    <select *ngSwitchCase="'booleen'" class="form-control" [formControl]="cellForms[valeur._id]" (change)="updateCell(valeur._id, tableau.colonnes[colIndex].type)">
+                      <option [ngValue]="true">Oui</option>
+                      <option [ngValue]="false">Non</option>
+                    </select>
+                    <span *ngSwitchDefault>{{ cellForms[valeur._id].value }}</span>
+                  </ng-container>
+                </ng-container>
+
+                <ng-template #displayValue>
+                  {{ valeur.valeur }}
+                </ng-template>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+  </div>
+</div>
+<button (click)="closeDialog()">❌ Fermer</button>
+</div>
+

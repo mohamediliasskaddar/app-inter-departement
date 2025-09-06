@@ -1,3 +1,6 @@
+<div class="modal-container">
+  <h3>Créer une publication</h3>
+
 <form [formGroup]="publicationForm" (ngSubmit)="submitPublication()" class="publication-composer">
   
   <!-- Select type first -->
@@ -46,11 +49,6 @@
       </select>
     </div>
 
-    <!-- <div>
-      <label for="departement">{{ labelMap[type]?.departement || labelMap['default'].departement }}</label>
-      <input id="departement" type="text" formControlName="departement" />
-    </div> -->
-
     <div>
       <label for="image">Image (optionnel) :</label>
       <input id="image" type="file" (change)="onFileChange($event)" />
@@ -69,3 +67,6 @@
     </div>
   </div>
 </form>
+
+<button (click)="closeDialog()">❌ Fermer</button>
+</div>

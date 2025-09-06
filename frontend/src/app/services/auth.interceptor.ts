@@ -11,7 +11,7 @@ export const AuthInterceptor: HttpInterceptorFn = (req, next) => {
       headers: req.headers.set('Authorization', `Bearer ${token}`)
     });
 
-    console.log('[AuthInterceptor] Token attached:', token);
+    // console.log('[AuthInterceptor] Token attached:', token);
     return next(authReq);
   }
 

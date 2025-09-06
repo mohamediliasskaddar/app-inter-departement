@@ -2,11 +2,12 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService} from '../../../../services/user.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { NgFor, NgIf } from '@angular/common';
+import { CommonModule, NgFor, NgIf } from '@angular/common';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-profile',
-  imports: [NgIf, ReactiveFormsModule, NgFor],
+  imports: [NgIf, ReactiveFormsModule, NgFor, CommonModule],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
@@ -16,35 +17,52 @@ export class ProfileComponent implements OnInit {
   successMessage: string = '';
   errorMessage: string = '';
   departments = ['HSEEn', 'RH', 'IT', 'Qualite', 'Maintenance'];
+  avatarUrl!: string;
 
   // Field edit toggles
   isEditingName = false;
   isEditingEmail = false;
-  isEditingDepartment = false;
+  isEditingDepartment = false;see3
 
-  constructor(private userService: UserService, private fb: FormBuilder) {
+  constructor(private userService: UserService,
+     private fb: FormBuilder,
+    public dialogRef : MatDialogRef<ProfileComponent> ) {
     this.profileForm = this.fb.group({
-      name: [''],
+      nom: [''],
       email: [''],
-      department: [''],
+      departement: [''],
       role: [{ value: '', disabled: true }]
     });
   }
 
+  createAvatarUrl(name: string) {
+    this.avatarUrl =  `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name)}`;
+  }
+
+        // this.avatarUrl = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(this.user.nom)}`;
+
   ngOnInit(): void {
     this.loadProfile();
   }
+
+  closeDialog() { 
+    this.dialogRef.close();
+  }
+
+
 
   loadProfile(): void {
     this.isLoading = true;
     this.userService.getCurrentUser().subscribe({
       next: (user) => {
         this.profileForm.patchValue({
-          name: user.name,
+          nom: user.nom,
           email: user.email,
-          department: user.department,
+          departement: user.departement,
           role: user.role
+          
         });
+        this.createAvatarUrl(user.nom);
         this.isLoading = false;
       },
       error: () => {
@@ -58,9 +76,9 @@ export class ProfileComponent implements OnInit {
     if (this.profileForm.invalid) return;
 
     const updateData = {
-      name: this.profileForm.value.name,
+      nom: this.profileForm.value.nom,
       email: this.profileForm.value.email,
-      department: this.profileForm.value.department
+      departement: this.profileForm.value.departement
     };
 
     this.userService.updateCurrentUser(updateData).subscribe({

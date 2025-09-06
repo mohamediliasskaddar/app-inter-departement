@@ -1,0 +1,63 @@
+<div class="container mt-4">
+  <h2>Publications</h2>
+  <!-- the link to create a new publication -->
+   <!-- <a routerLink="/pubComposer" routerLinkActive="active">new pub</a> -->
+     <button (click)="openCreatePublicationDialog()" class="btn btn-success mb-3">
+        ➕ Créer une publication
+    </button>
+
+  <div *ngIf="isLoading" class="alert alert-info">Loading publications...</div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <div *ngIf="!isLoading && publications.length === 0" class="alert alert-warning">
+    No publications found.
+  </div>
+
+  <div *ngFor="let pub of publications" class="card mb-3">
+    <div class="card-body">
+      <!-- Edit mode -->
+            <!-- Only render if the edit form is initialized -->
+      <div *ngIf="editMode[pub._id] && editForms[pub._id]" [formGroup]="editForms[pub._id]">
+        <input type="text" class="form-control mb-2" formControlName="titre" />
+        <textarea class="form-control mb-2" formControlName="description"></textarea>
+        <input type="text" class="form-control mb-2" formControlName="type" />
+        <input type="text" class="form-control mb-2" formControlName="statut" />
+
+        <input type="file" class="form-control mb-2" (change)="onFileSelected($event, pub._id)" />
+
+        <button class="btn btn-success btn-sm me-2" (click)="updatePublication(pub._id)">💾 Save</button>
+        <button class="btn btn-secondary btn-sm" (click)="toggleEdit(pub._id)">❌ Cancel</button>
+      </div>
+
+
+      <!-- View mode -->
+      <div *ngIf="!editMode[pub._id]">
+        <h5 class="card-title">{{ pub.titre }}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">
+          {{ pub.type }} • {{ pub.dateDebut | date:'shortDate' }}
+        </h6>
+        <p class="card-text">{{ pub.description }}</p>
+
+        <p><strong>Status:</strong> {{ pub.statut }}</p>
+        <p><strong>Author Department:</strong> {{ pub.departement }}</p>
+
+        <img *ngIf="pub.image" 
+             [src]="getImageUrl(pub.image)" 
+             alt="Publication image" 
+             class="img-fluid mt-2 rounded shadow-sm" 
+             style="max-width: 300px;" />
+
+        <p class="mt-2">
+          <strong>Author:</strong> {{ pub.auteur.nom }} ({{ pub.auteur.role }}) - {{ pub.auteur.email }}
+        </p>
+
+        <div *ngIf="isAuthor(pub)" class="mt-3">
+          <button class="btn btn-primary btn-sm me-2" (click)="toggleEdit(pub._id)">✏️ Modify</button>
+          <button class="btn btn-danger btn-sm" (click)="deletePublication(pub._id)">🗑 Delete</button>
+        </div>
+
+        <span>=====================</span>
+      </div>
+    </div>
+  </div>
+</div>

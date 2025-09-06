@@ -39,19 +39,57 @@
         <th>Actions</th>
       </tr>
     </thead>
-    <tbody>
-          <tr *ngFor="let user of filteredUsers()">
-      <td>{{ user.nom }}</td>
-      <td>{{ user.email }}</td>
-      <td>{{ user.role }}</td>
-      <td>{{ user.departement }}</td>
-      <td>
-        <button class="btn btn-sm btn-primary" (click)="editUser(user._id)">Edit</button>
-        <button class="btn btn-sm btn-danger" (click)="deleteUser(user._id)">Delete</button>
-      </td>
-    </tr>
+   <tbody>
+  <tr *ngFor="let user of filteredUsers()">
+    <!-- Name -->
+    <td>
+      <ng-container *ngIf="editingUserId !== user._id; else editName">
+        {{ user.nom }}
+      </ng-container>
+      <ng-template #editName>
+        <input type="text" [(ngModel)]="editValues.nom" class="form-control" />
+      </ng-template>
+    </td>
 
-    </tbody>
+    <!-- Email -->
+    <td>
+      <ng-container *ngIf="editingUserId !== user._id; else editEmail">
+        {{ user.email }}
+      </ng-container>
+      <ng-template #editEmail>
+        <input type="email" [(ngModel)]="editValues.email" class="form-control" />
+      </ng-template>
+    </td>
+
+    <!-- Role (not editable in your current setup) -->
+    <td>{{ user.role }}</td>
+
+    <!-- Department -->
+    <td>
+      <ng-container *ngIf="editingUserId !== user._id; else editDept">
+        {{ user.departement }}
+      </ng-container>
+      <ng-template #editDept>
+        <select [(ngModel)]="editValues.departement" class="form-control">
+          <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
+        </select>
+      </ng-template>
+    </td>
+
+    <!-- Actions -->
+    <td>
+      <ng-container *ngIf="editingUserId === user._id; else viewActions">
+        <button class="btn btn-sm btn-success me-1" (click)="saveUser(user._id)">Save</button>
+        <button class="btn btn-sm btn-secondary" (click)="cancelEdit()">Cancel</button>
+      </ng-container>
+      <ng-template #viewActions>
+        <button class="btn btn-sm btn-primary me-1" (click)="editUserInline(user)">✏️ Edit</button>
+        <button class="btn btn-sm btn-danger" (click)="deleteUser(user._id)">🗑️ Delete</button>
+      </ng-template>
+    </td>
+  </tr>
+</tbody>
+
   </table>
 
   <div *ngIf="!isLoading && users.length === 0" class="alert alert-warning">

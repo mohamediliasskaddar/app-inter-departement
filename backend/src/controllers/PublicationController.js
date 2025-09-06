@@ -7,24 +7,37 @@ exports.create = async (req, res, next) => {
   try {
     console.log('Publication data received:', req.body, req.file);
 
-    const data = req.body;
-    // Add user info if you want:
+    const data = { ...req.body };
+
+    // Attach user info from authenticated user
     data.auteur = req.user._id;
     data.departement = req.user.departement;
 
-    // If you want to save file info:
+    // Attach uploaded file if present
     if (req.file) {
-      data.image = req.file.path; // or store filename etc.
+      data.image = 'uploads/' + req.file.filename;
     }
 
+    // Create the publication
     const pub = await Publication.create(data);
 
+    // Create a system-wide notification AFTER successful pub creation
+    await Notification.create({
+      destinataire: null, // null = broadcast to all (handled in frontend or query logic)
+      description: `Nouvelle publication: ${pub.titre}`,
+      type: "NewPub",
+      referenceId: pub._id
+    });
+
+    // Send response AFTER all is successful
     res.status(201).json(pub);
+
   } catch (err) {
     console.error('Error creating publication:', err);
     next(err);
   }
 };
+
 
 
 exports.list = async (req, res) => {
@@ -41,6 +54,24 @@ exports.list = async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 };
 
+
+exports.update = async (req, res) => {
+  try {
+    const updateData = req.body;
+
+    // If new image is uploaded
+    if (req.file) {
+      updateData.image = 'uploads/' + req.file.filename;
+    }
+
+    const updated = await Publication.findByIdAndUpdate(req.params.id, updateData, { new: true });
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
 exports.get = async (req, res) => {
   try {
     const pub = await Publication.findById(req.params.id)
@@ -53,12 +84,7 @@ exports.get = async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 };
 
-exports.update = async (req, res) => {
-  try {
-    const updated = await Publication.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json(updated);
-  } catch (err) { res.status(500).json({ error: err.message }); }
-};
+
 
 exports.delete = async (req, res) => {
   try {

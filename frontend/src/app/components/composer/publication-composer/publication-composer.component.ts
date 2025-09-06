@@ -5,12 +5,14 @@ import { RouterLink } from '@angular/router';
 import { PublicationsService } from '../../../services/publications.service';
 import { NgIf } from '@angular/common';
 import { PUBLICATION_LABELS } from '../../../utils/pub-labels';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+
 
 
 @Component({
   selector: 'app-publication-composer',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, NgIf],
+  imports: [FormsModule, ReactiveFormsModule, NgIf, MatDialogModule],
   templateUrl: './publication-composer.component.html',
   styleUrls: ['./publication-composer.component.css']
 })
@@ -24,7 +26,8 @@ export class PublicationComposerComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private pubs: PublicationsService
+    private pubs: PublicationsService,
+    public dialogRef: MatDialogRef<PublicationComposerComponent>
   ) {
     this.publicationForm = this.fb.group({
       titre: [''],
@@ -39,10 +42,13 @@ export class PublicationComposerComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Listen to type changes to reflect updated labels dynamically in the template
     this.publicationForm.get('type')?.valueChanges.subscribe(value => {
       this.type = value;
     });
+  }
+
+  closeDialog() {
+    this.dialogRef.close();
   }
 
   onFileChange(event: any) {
@@ -79,7 +85,9 @@ export class PublicationComposerComponent implements OnInit {
         this.successMessage = 'Publication créée avec succès.';
         this.errorMessage = '';
         this.publicationForm.reset();
-        this.type = ''; // Reset type to hide fields
+        this.type = ''; 
+        //what if i called a methode here from the notification service to send a notification to all users
+
       },
       error: (err) => {
         console.error('Erreur lors de la création de la publication:', err);

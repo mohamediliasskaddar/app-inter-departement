@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import {IMessage, IUser } from '../../../utils/models';  
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MatDialogRef } from '@angular/material/dialog';
     // adjust path
 
 @Component({
@@ -21,7 +22,12 @@ export class MessageComposerComponent {
     dateFin: '',
   };
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,
+    public dialogRef: MatDialogRef<MessageComposerComponent>
+  ) {}
+  closeDialog() {
+    this.dialogRef.close();
+  }
 
   submitMessage() {
     // Optional: Validate required fields here

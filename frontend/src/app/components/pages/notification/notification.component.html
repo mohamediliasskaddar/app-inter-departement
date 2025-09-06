@@ -1,3 +1,62 @@
-<p>
-  notification works!
-</p>
+<div class="notifications-container">
+  <h2>Notifications</h2>
+
+  <div *ngIf="loading">Chargement...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="notifications.length === 0 && !loading">Aucune notification.</div>
+
+  <div *ngFor="let notif of notifications" [ngClass]="{ 'read': notif.lu, 'unread': !notif.lu }" class="notification-item">
+    <div class="notif-info">
+      <p class="notif-type">📌 {{ notif.type }}</p>
+      <p class="notif-description">{{ notif.description }}</p>
+      <p class="notif-date">{{ notif.dateEnvoi | date:'short' }}</p>
+    </div>
+
+    <!-- Only show "Mark as read" if user is cadre and notification is unread -->
+    <button 
+      *ngIf="!notif.lu && currentUser?.role === 'cadre'" 
+      (click)="markAsRead(notif._id)">
+      Marquer comme lue
+    </button>
+  </div>
+</div>
+
+<style>
+  .notifications-container {
+  max-width: 600px;
+  margin: auto;
+  padding: 1rem;
+}
+
+.notification-item {
+  border: 1px solid #ddd;
+  border-left: 4px solid #007bff;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  background-color: #fff;
+  transition: 0.3s;
+}
+
+.notification-item.unread {
+  background-color: #f9f9f9;
+  font-weight: 500;
+}
+
+.notification-item.read {
+  opacity: 0.6;
+}
+
+.notif-info p {
+  margin: 2px 0;
+}
+
+button {
+  margin-top: 8px;
+  padding: 4px 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+</style>

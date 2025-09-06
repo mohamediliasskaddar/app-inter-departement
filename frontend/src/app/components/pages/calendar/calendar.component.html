@@ -1,2 +1,8 @@
-
+<!-- ADD NEW message  -->
+<!-- <a routerLink="/msgComposer" routerLinkActive="active">|new msg</a> -->
+<button
+      (click)="openCreateMessageDialog()" class="btn btn-primary mb-3">
+      ➕ Composer un message
+</button>
+<!-- FULL CALENDAR -->
 <full-calendar [options]="calendarOptions"></full-calendar>

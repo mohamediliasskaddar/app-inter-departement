@@ -27,7 +27,10 @@ getUsersEnAttente(): Observable<any[]> {
   return this.http.get<any[]>(`${this.apiUrl}?role=En attente`);
 }
 
-//CHANGE USERS  role
+//UPDATE user INFO
+ updateUser(userId: string, data: { nom?: string; departement?: string; email?:string }): Observable<any> {
+   return this.http.put<any>(`${this.apiUrl}/${userId}`, data);
+    }
 
 //PUT  http://localhost:3000/api/users/4b8f0f4e4b0c3a5d6f9e8c1
 changeUserRole(userId: string, newRole: string): Observable<any> {
@@ -45,7 +48,7 @@ getCurrentUser(): Observable<any> {
 }
 
 //update current user profile
-updateCurrentUser(data: { name?: string; department?: string }): Observable<any> {
+updateCurrentUser(data: { nom?: string; departement?: string; email?:string }): Observable<any> {
   return this.http.put<any>(`${this.apiUrl}/me`, data);
 }
 
