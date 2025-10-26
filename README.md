@@ -146,6 +146,7 @@ ConnectOps est une plateforme interne destinée à automatiser et fluidifier la 
 screenshots link on figma : 
 * **Auteur / Équipe** : kaddar moahmed iliass 
 ---
-## 📧 Contact
+## screenshot
 
-For screenshot:  get a look at  [figma]([mailto:moahmediliassk@gmail.com](https://www.figma.com/design/YdvceP2EK7JTYQGmWKBnrT/app-inter-departement?node-id=0-1&t=fhdqyo5ZbKtLxOWk-1)).
+For screenshot: get a look at [Figma](https://www.figma.com/design/YdvceP2EK7JTYQGmWKBnrT/app-inter-departement?node-id=0-1&t=fhdqyo5ZbKtLxOWk-1).
+
